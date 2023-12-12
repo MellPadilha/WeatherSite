@@ -15,14 +15,24 @@
                     <q-select
                       rounded
                       borderless
-                      v-model="model"
+                      v-model="city"
                       :options="data.cities"
                       label="Cidades"
                       class="search"
                       placeholde="Escolha a cidade"
                     />
                   </q-card-section>
-                  <q-card-section></q-card-section>
+                  <q-card-section>
+                    <div>
+                      Tempo:
+                      {{ this.cityInfo.tempo }}
+                    </div>
+                    <div>Temperatura: {{ this.cityInfo.temperatura }}</div>
+                    <div>Vento: {{ this.cityInfo.vento }}</div>
+                    <div>Humidade: {{ this.cityInfo.humidade }}</div>
+
+                    <q-btn @click="this.a()">Aaaa</q-btn>
+                  </q-card-section>
                 </q-card>
               </div>
             </div>
@@ -34,19 +44,22 @@
 </template>
 
 <script>
+import axios from "axios";
 import json from "src/pages/city.json";
 
 export default {
-  name: "IndexPage",
   data() {
     return {
-      apiUrl: `https://api.openweathermap.org/data/2.5/weather?&appid=${process.env.API_KEY}&units=metric`,
-      response: "",
+      api_key: "56c9fef1a5ee34473015f53ff30f06fb",
+      url_base: "https://api.openweathermap.org/data/2.5/",
+      weather_icon: "http://openweathermap.org/img/wn/",
+      city: "Curitiba",
       data: json,
-      model: "Curitiba",
+      weather: {},
+      cityInfo: [],
     };
   },
-  mounted() {
+  async mounted() {
     const stars = document.getElementById("stars");
     const backG = document.getElementById("backG");
     function generateStar(randomAngle = Math.floor(Math.random(100) * 360)) {
@@ -75,13 +88,32 @@ export default {
       stars.removeChild(h1);
     }, 2000);
   },
+  created() {
+    this.fetchWeather();
+  },
   methods: {
-    async getTemperature(city) {
-      this.response = await fetch(this.apiUrl + `&q=${city}`);
+    async fetchWeather() {
+      let response = await axios.get(
+        `${this.url_base}weather?q=${this.city}&units=metric&APPID=${this.api_key}`
+      );
+      this.setResults(response.data);
+    },
+    setResults(returnedResponse) {
+      this.weather = returnedResponse;
+      this.cityInfo = {
+        tempo: this.weather.weather[0].description,
+        temperatura: this.weather.main.temp,
+        vento: this.weather.wind.speed,
+        humidade: this.weather.main.humidity,
+      };
+    },
+    a() {
+      console.log(process.env.VUE_APP_APIKEY);
     },
   },
 };
 </script>
+
 <style lang="scss">
 .container {
   width: 100%;
