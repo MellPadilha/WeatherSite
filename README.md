@@ -26,13 +26,14 @@ This is a simple weather application created using Vue.js. It allows users to ch
 ### Configuration
 
 1. Get an API key from [OpenWeatherMap](https://openweathermap.org/api) and replace `YOUR_API_KEY` in `src/utils/api.js` with your API key.
+2. Install the vue framework [Quasar](https://quasar.dev/).
 
 ### Running the App
 
 Run the app locally:
 
 ```
-npm run serve
+npm quasar dev
 ```
 
 Open your browser and visit `http://localhost:8080` to see the app running.
